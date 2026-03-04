@@ -1,10 +1,6 @@
-require: ["ts-node/register"];
-
 import { setHeadlessWhen, setCommonPlugins } from "@codeceptjs/configure";
 
 setHeadlessWhen(process.env.HEADLESS);
-
-// enable all common plugins https://github.com/codeceptjs/configure#setcommonplugins
 setCommonPlugins();
 
 export const config: CodeceptJS.MainConfig = {
@@ -27,8 +23,9 @@ export const config: CodeceptJS.MainConfig = {
     },
     JSONResponse: {},
   },
+  require: ["ts-node/register"],
   include: {
-    I: "./steps_file",
+    I: "./steps_file.ts",
     loginPage: "./pages/loginPage.ts",
     inventoryPage: "./pages/inventoryPage.ts",
     cartPage: "./pages/cartPage.ts",

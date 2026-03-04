@@ -34,7 +34,7 @@ jobs:
       - name: Run tests
         env:
           HEADLESS: "true"
-          
+
         run: |
           rm -rf output || true
           mkdir -p output
@@ -48,7 +48,7 @@ jobs:
           path: output/allure-results/**
           if-no-files-found: warn
           retention-days: 7
-          
+
       - name: Upload test output (optional)
         if: always()
         uses: actions/upload-artifact@v4
@@ -58,10 +58,9 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-
   allure-report:
     name: Build & Publish Allure Report
-    if: always()              
+    if: always()
     needs: [tests]
     runs-on: ubuntu-latest
     steps:

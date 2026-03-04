@@ -7,7 +7,6 @@
     "test:ui": "npx codeceptjs run --steps --grep '@ui'",
     "test:api": "npx codeceptjs run --steps --grep '@api'",
     "test:headless": "HEADLESS=true codeceptjs run --steps",
-    "codeceptjs:ui": "codecept-ui --app",
     "allure:generate": "allure generate output/allure-results -o output/allure-report --clean",
     "allure:open": "allure open output/allure-report",
     "lint": "eslint .",
