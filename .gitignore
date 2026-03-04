@@ -1,0 +1,78 @@
+# ----------------------------
+# Node.js
+# ----------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# ----------------------------
+# TypeScript
+# ----------------------------
+dist/
+*.tsbuildinfo
+
+# ----------------------------
+# Playwright
+# ----------------------------
+/playwright-report/
+/playwright/.cache/
+/test-results/
+/blob-report/
+/trace/
+
+# Playwright artifacts
+*.trace.zip
+*.png
+*.webm
+
+# ----------------------------
+# CodeceptJS
+# ----------------------------
+output/
+output/*
+!output/.gitkeep
+
+# Step definitions auto-generation
+steps.d.ts
+
+# ----------------------------
+# Allure Report
+# ----------------------------
+allure-results/
+allure-report/
+output/allure-results/
+output/allure-report/
+
+# ----------------------------
+# OS / Editor
+# ----------------------------
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# JetBrains
+.idea/
+
+# ----------------------------
+# Misc
+# ----------------------------
+*.tmp
+*.cache
