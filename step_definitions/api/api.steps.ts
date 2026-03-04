@@ -1,12 +1,9 @@
-export {};
-/* global Given, When, Then */
 const { I } = inject();
 
 let storedProduct: any = {};
 let lastBody: any = undefined;
 let lastDuration = 0;
 
-// Helpers
 function parseData(data: any) {
   try {
     return typeof data === "string" ? JSON.parse(data) : data;
@@ -15,7 +12,6 @@ function parseData(data: any) {
   }
 }
 
-// --- GENERIC ---
 When("I send GET {string}", async (endpoint: string) => {
   const start = Date.now();
   const res = await I.sendGetRequest(endpoint);
@@ -53,7 +49,6 @@ Then("response should contain JSON:", (expected: any) => {
   I.seeResponseContainsJson(JSON.parse(expected.content));
 });
 
-// --- SCENARIO 1: PRINT ODD TITLES ---
 Then("I print product titles with odd IDs", async () => {
   const products = (lastBody && lastBody.products) || [];
   products
@@ -61,7 +56,6 @@ Then("I print product titles with odd IDs", async () => {
     .forEach((p: any) => console.log(`ODD PRODUCT: ${p.id} - ${p.title}`));
 });
 
-// --- SCENARIO 3 ---
 Given("I store response from GET {string}", async (endpoint: string) => {
   const res = await I.sendGetRequest(endpoint);
   storedProduct = parseData(res.data);
@@ -85,7 +79,6 @@ Then(
   },
 );
 
-// --- SCENARIO 4 ---
 Then("response time should be <= 1000 ms", () => {
   if (lastDuration > 1000)
     throw new Error(`Response took ${lastDuration} ms (> 1000 ms)`);

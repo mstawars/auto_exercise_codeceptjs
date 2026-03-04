@@ -1,6 +1,7 @@
+require: ["ts-node/register"];
+
 import { setHeadlessWhen, setCommonPlugins } from "@codeceptjs/configure";
-// turn on headless mode when running with HEADLESS=true environment variable
-// export HEADLESS=true && npx codeceptjs run
+
 setHeadlessWhen(process.env.HEADLESS);
 
 // enable all common plugins https://github.com/codeceptjs/configure#setcommonplugins
@@ -13,8 +14,8 @@ export const config: CodeceptJS.MainConfig = {
     Playwright: {
       browser: "chromium",
       url: "https://www.saucedemo.com/",
-      show: true,
-      trace: true,
+      show: false,
+      trace: false,
     },
     REST: {
       endpoint: process.env.API_BASE_URL || "https://dummyjson.com",
@@ -28,6 +29,11 @@ export const config: CodeceptJS.MainConfig = {
   },
   include: {
     I: "./steps_file",
+    loginPage: "./pages/loginPage.ts",
+    inventoryPage: "./pages/inventoryPage.ts",
+    cartPage: "./pages/cartPage.ts",
+    checkoutPage: "./pages/checkoutPage.ts",
+    productPage: "./pages/productPage.ts",
   },
 
   gherkin: {

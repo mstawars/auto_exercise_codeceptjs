@@ -1,13 +1,10 @@
-export {}; // unika konfliktu 'I' (modułowy scope)
+import { keyValueTableToObject } from "../../utils/gherkin";
 
-/* global Given, When, Then */
-const { I } = inject();
+const { I, loginPage, inventoryPage, cartPage, checkoutPage, productPage } =
+  inject();
 
-// ----------------------
-// LOGIN
-// ----------------------
 Given("I am on the SauceDemo login page", () => {
-  I.amOnPage("https://www.saucedemo.com/");
+  loginPage.open();
 });
 
 When("I log in as {string}", async (user: string) => {
@@ -18,96 +15,70 @@ When("I log in as {string}", async (user: string) => {
   };
   const creds = users[user];
   if (!creds) throw new Error(`Unknown user alias: ${user}`);
-
-  I.fillField("#user-name", creds.username);
-  I.fillField("#password", creds.password);
-  I.click("#login-button");
+  await loginPage.login(creds.username, creds.password);
 });
 
-When("I should see login error {string}", async (user: string) => {
-  I.see(
-    `Epic sadface: Sorry, this user has been locked out.`,
-    ".error-message-container",
-  );
+When("I should see login error {string}", () => {
+  loginPage.seeLockedOutError();
 });
 
-// ----------------------
-// CART ADD / REMOVE
-// ----------------------
 When("I add all products to the cart", async () => {
-  const total = await I.grabNumberOfVisibleElements(".inventory_item");
-  // stabilny css + indeksowanie via locate().at()
-  for (let i = 1; i <= total; i++) {
-    I.click(locate(".inventory_item .pricebar button").at(i));
-  }
+  await inventoryPage.addAllToCart();
 });
 
 When("I open the cart", () => {
-  I.click(".shopping_cart_link");
+  inventoryPage.goToCart();
 });
 
 When("I remove product number {int} from the cart", (index: number) => {
-  I.click(locate(".cart_item button").at(index));
+  cartPage.removeByIndex(index);
 });
 
-// ----------------------
-// CHECKOUT
-// ----------------------
 When("I proceed to checkout with data:", (table: any) => {
-  I.click("#checkout");
-  const data = Object.fromEntries(
-    table.rows.map((row: any) => row.cells.map((cell: any) => cell.value)),
-  );
-  I.fillField("#first-name", data.firstName);
-  I.fillField("#last-name", data.lastName);
-  I.fillField("#postal-code", data.zip);
-  I.click("#continue");
+  cartPage.openCheckout();
+  const data = keyValueTableToObject(table); // { firstName, lastName, zip }
+  checkoutPage.fillCustomer({
+    firstName: data.firstName,
+    lastName: data.lastName,
+    zip: data.zip,
+  });
+  checkoutPage.continue();
 });
 
 Then(
   "I should see the checkout overview contains correct items and count",
   async () => {
-    // Po usunięciu 1 z 6 → powinno być 5 pozycji na overview
-    const count = await I.grabNumberOfVisibleElements(".cart_item");
-    if (count !== 5) {
-      throw new Error(`Expected 5 items but found ${count}`);
-    }
+    const count = await checkoutPage.countOverviewItems();
+    if (count !== 5) throw new Error(`Expected 5 items but found ${count}`);
   },
 );
 
 When("I finish the purchase", () => {
-  I.click("#finish");
+  checkoutPage.finish();
 });
 
 Then("I should see order confirmation", () => {
-  I.see("Thank you for your order");
-  I.seeElement(".complete-header");
+  checkoutPage.seeOrderConfirmation();
 });
 
-// ----------------------
-// PRODUCT PAGE
-// ----------------------
 When("I open product {string}", (name: string) => {
-  I.click(locate(".inventory_item_name").withText(name));
+  inventoryPage.openItemByName(name);
 });
 
 When("I add product to cart from product page", () => {
-  I.click('button[data-test^="add-to-cart"]');
+  productPage.addToCart();
 });
 
 Then("I should see product {string} in the cart", (name: string) => {
   I.see(name, ".cart_item");
 });
 
-// ----------------------
-// SORTING
-// ----------------------
 When("I sort products by {string}", (option: string) => {
-  I.selectOption(".product_sort_container", option);
+  inventoryPage.sortBy(option);
 });
 
 Then("product names should be sorted ascending", async () => {
-  const names = await I.grabTextFromAll(".inventory_item_name");
+  const names = await inventoryPage.getProductNames();
   const expected = [...names].sort((a, b) => a.localeCompare(b));
   if (JSON.stringify(names) !== JSON.stringify(expected)) {
     throw new Error(
