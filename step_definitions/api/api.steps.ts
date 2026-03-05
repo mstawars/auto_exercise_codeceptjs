@@ -1,5 +1,5 @@
 const { I } = inject();
-
+import assert from "assert";
 let storedProduct: any = {};
 let lastBody: any = undefined;
 let lastDuration = 0;
@@ -63,19 +63,29 @@ Given("I store response from GET {string}", async (endpoint: string) => {
 
 Then(
   "updated product should contain original properties except changed ones",
+
   async () => {
     const updated = lastBody;
-    if (!updated || !storedProduct)
-      throw new Error("Missing stored or updated product data");
+    assert(updated, "Missing updated product");
+    assert(storedProduct, "Missing stored product");
 
-    if (updated.id !== storedProduct.id)
-      throw new Error("ID should remain unchanged");
-    if (updated.brand !== storedProduct.brand)
-      throw new Error("Brand should remain unchanged");
-    if (updated.description !== storedProduct.description)
-      throw new Error("Description should remain unchanged");
-    if (updated.title === storedProduct.title)
-      throw new Error("Title should be changed");
+    assert.equal(updated.id, storedProduct.id, "ID should remain unchanged");
+    assert.equal(
+      updated.brand,
+      storedProduct.brand,
+      "Brand should remain unchanged",
+    );
+    assert.equal(
+      updated.description,
+      storedProduct.description,
+      "Description should remain unchanged",
+    );
+
+    assert.notEqual(
+      updated.title,
+      storedProduct.title,
+      "Title should be changed",
+    );
   },
 );
 
