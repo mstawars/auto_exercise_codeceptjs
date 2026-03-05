@@ -1,4 +1,5 @@
 import { keyValueTableToObject } from "../../utils/gherkin";
+import assert from "assert";
 
 const { I, loginPage, inventoryPage, cartPage, checkoutPage, productPage } =
   inject();
@@ -36,7 +37,7 @@ When("I remove product number {int} from the cart", (index: number) => {
 
 When("I proceed to checkout with data:", (table: any) => {
   cartPage.openCheckout();
-  const data = keyValueTableToObject(table); // { firstName, lastName, zip }
+  const data = keyValueTableToObject(table);
   checkoutPage.fillCustomer({
     firstName: data.firstName,
     lastName: data.lastName,
@@ -47,9 +48,10 @@ When("I proceed to checkout with data:", (table: any) => {
 
 Then(
   "I should see the checkout overview contains correct items and count",
+
   async () => {
     const count = await checkoutPage.countOverviewItems();
-    if (count !== 5) throw new Error(`Expected 5 items but found ${count}`);
+    assert.strictEqual(count, 5, `Expected 5 items but found ${count}`);
   },
 );
 
@@ -80,9 +82,9 @@ When("I sort products by {string}", (option: string) => {
 Then("product names should be sorted ascending", async () => {
   const names = await inventoryPage.getProductNames();
   const expected = [...names].sort((a, b) => a.localeCompare(b));
-  if (JSON.stringify(names) !== JSON.stringify(expected)) {
-    throw new Error(
-      `Products not sorted correctly.\nActual:   ${JSON.stringify(names)}\nExpected: ${JSON.stringify(expected)}`,
-    );
-  }
+  assert.strictEqual(
+    JSON.stringify(names),
+    JSON.stringify(expected),
+    `Products not sorted correctly.\nActual:   ${JSON.stringify(names)}\nExpected: ${JSON.stringify(expected)}`,
+  );
 });

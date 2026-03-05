@@ -43,8 +43,6 @@ output/
 output/*
 !output/.gitkeep
 
-# Step definitions auto-generation
-steps.d.ts
 
 # ----------------------------
 # Allure Report

@@ -9,7 +9,6 @@ export const config: CodeceptJS.MainConfig = {
   helpers: {
     Playwright: {
       browser: "chromium",
-      url: "https://www.saucedemo.com/",
       show: false,
       trace: false,
     },
